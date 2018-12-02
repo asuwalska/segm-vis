@@ -5,7 +5,7 @@ if ~exist('segmColor','var')
     segmColor = 'green'; % if segmentation color is not specified, use green
 end
 
-figure();
+figure('Position', [10 10 900 600]);
 
 % if image exist
 if numel(size(image)) == 3
@@ -19,9 +19,11 @@ if numel(size(image)) == 3
     end
     
     bw = zeros(size(image)); % take only shape from image
-    bw(image>0) = 1;
-    SE = strel('disk',2); % for better visualization
-    J = imclose(bw, SE);
+    bw(image>0) = 1; 
+    
+    % for better visualization
+    J = imfill(bw,'holes');
+    J = smooth3(J,'box',5);
 
     hv = isosurface(J, 0.5);
     h = patch(hv);
@@ -33,8 +35,7 @@ end
 
 hv2 = isosurface(segm, 0.5);
 patch(hv2, 'FaceColor', segmColor, 'EdgeColor', 'none');
-set(gca,'visible','off'); % switch off the axis
 view(3);
 axis vis3d % smooth rotation
-set(gca, 'xlim',[0 size(segm,2)], 'ylim',[0 size(segm,1)], ...
+set(gca, 'visible','off', 'xlim',[0 size(segm,2)], 'ylim',[0 size(segm,1)], ...
     'zlim',[0 size(segm,3)]); % axis limits
