@@ -1,4 +1,4 @@
-function [] = montage_image(image)
+function MontageImage(image)
 % plots all slices in montage
 
 minMRI = min(image(:));

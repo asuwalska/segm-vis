@@ -1,5 +1,5 @@
-function [] = surface_3D(segm, image, segmColor, imageColor)
-% Plot 3D model of image with segmented objects in specified color
+function Surface3D(segm, image, segmColor, imageColor)
+% Plot smoothed 3D model of image with segmented objects in specified color
 
 if ~exist('segmColor','var')
     segmColor = 'green'; % if segmentation color is not specified, use green
@@ -27,14 +27,14 @@ if numel(size(image)) == 3
 
     hv = isosurface(J, 0.5);
     h = patch(hv);
-    set(h, 'FaceColor', imageColor);
-    set(h, 'EdgeColor', 'none');
-    alpha(0.1);
+    set(h, 'FaceColor', imageColor, 'EdgeColor', 'none', 'FaceAlpha', 0.1);
     hold on;
+    
 end
 
 hv2 = isosurface(segm, 0.5);
 patch(hv2, 'FaceColor', segmColor, 'EdgeColor', 'none');
+
 view(3);
 axis vis3d % smooth rotation
 set(gca, 'visible','off', 'xlim',[0 size(segm,2)], 'ylim',[0 size(segm,1)], ...

@@ -1,4 +1,4 @@
-function [] = show_segmentation(image, segm, war)
+function ShowSegmentation(image, segm, war)
 % plot 2D segmentation from slice war
 
 if numel(size(image)) == 3
