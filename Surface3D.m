@@ -1,5 +1,9 @@
 function Surface3D(segm, image, segmColor, imageColor)
 % Plot smoothed 3D model of image with segmented objects in specified color
+%
+% Example of usage: 
+%   Surface3D(segm1, segm2, 'r', 'b');
+%
 
 if ~exist('segmColor','var')
     segmColor = 'green'; % if segmentation color is not specified, use green
