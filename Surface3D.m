@@ -9,7 +9,7 @@ if ~exist('segmColor','var')
     segmColor = 'green'; % if segmentation color is not specified, use green
 end
 
-figure('Position', [10 10 900 600]);
+% figure('Position', [10 10 900 600]);
 
 % if image exist
 if numel(size(image)) == 3
