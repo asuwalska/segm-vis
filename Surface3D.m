@@ -1,4 +1,4 @@
-function Surface3D(segm, image, segmColor, imageColor)
+function Surface3D(segm, image, segmColor, imageColor, segAlfa, imgAlfa)
 % Plot smoothed 3D model of image with segmented objects in specified color
 %
 % Example of usage: 
@@ -31,13 +31,13 @@ if numel(size(image)) == 3
 
     hv = isosurface(J, 0.5);
     h = patch(hv);
-    set(h, 'FaceColor', imageColor, 'EdgeColor', 'none', 'FaceAlpha', 0.1);
+    set(h, 'FaceColor', imageColor, 'EdgeColor', 'none', 'FaceAlpha', imgAlfa);
     hold on;
     
 end
 
 hv2 = isosurface(segm, 0.5);
-patch(hv2, 'FaceColor', segmColor, 'EdgeColor', 'none');
+patch(hv2, 'FaceColor', segmColor, 'EdgeColor', 'none','FaceAlpha', segAlfa);
 
 view(3);
 axis vis3d % smooth rotation

@@ -22,9 +22,12 @@ function varargout = aplikacja(varargin)
 
 % Edit the above text to modify the response to help aplikacja
 
-% Last Modified by GUIDE v2.5 23-Dec-2018 21:45:48
+% Last Modified by GUIDE v2.5 02-Jan-2019 15:36:37
 
 % Begin initialization code - DO NOT EDIT
+global pressed
+pressed = false;
+
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
@@ -152,21 +155,27 @@ function montage_image_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of montage_image
 
-global file_img
+global file_img 
 
 cla(handles.axes2,'reset');
 set(gca,'Color',[0.83 0.82 0.78])
-buttons_list = [handles.surface_3D_img_seg, handles.surface_3D_img, handles.surface_3D_seg, handles.show_image_all, handles.show_seg_all];
+buttons_list = [handles.numberLayer, handles.numSeg, handles.surface_3D_img_seg, handles.surface_3D_img, handles.surface_3D_seg, handles.show_image_all, handles.show_seg_all];
 set(buttons_list,'Value',0);
 axes(handles.axes2);
 
-
-if size(file_img,1) ~= 0
-    MontageImage(file_img);
+if get(handles.montage_image,'Value') == 1
+    if size(file_img,1) ~= 0
+        set(handles.axes2,'visible', 'off');
+        MontageImage(file_img);
+    else
+        set(handles.axes2,'visible', 'off');
+        msgbox('Read images!');
+    end
 else
+    set(handles.montage_image,'Value',0);
     set(handles.axes2,'visible', 'off');
-    msgbox('Read images!');
 end
+
 
 
 % --- Executes on button press in surface_3D_img_seg.
@@ -181,17 +190,24 @@ global file_img seg
 
 cla(handles.axes2,'reset');
 set(gca,'Color',[0.83 0.82 0.78])
-buttons_list = [handles.montage_image, handles.surface_3D_img, handles.surface_3D_seg, handles.show_image_all, handles.show_seg_all];
+buttons_list = [handles.numberLayer, handles.numSeg, handles.montage_image, handles.surface_3D_img, handles.surface_3D_seg, handles.show_image_all, handles.show_seg_all];
 set(buttons_list,'Value',0);
 axes(handles.axes2);
 
-
-if (size(file_img,1) ~= 0 && size(seg,1) ~= 0)
-    Surface3D(seg, file_img, 'red', 'blue');
-    set(handles.axes2,'visible', 'off');
+if get(handles.surface_3D_img_seg, 'Value') == 1
+    if (size(file_img,1) ~= 0 && size(seg,1) ~= 0)
+        set(handles.axes2,'visible', 'off');
+        c = uisetcolor('Color of image');
+        a = uisetcolor('Color of segmentation');
+        Surface3D(seg, file_img, a, c, 1, 0.1);
+        set(handles.axes2,'visible', 'off');
+    else
+        set(handles.axes2,'visible', 'off');
+        msgbox('Read images and segmentation!');
+    end
 else
+    set(handles.surface_3D_img_seg,'Value',0);
     set(handles.axes2,'visible', 'off');
-    msgbox('Read images and segmentation!');
 end
 
 % --- Executes on button press in surface_3D_img.
@@ -205,17 +221,23 @@ global file_img
 
 cla(handles.axes2,'reset');
 set(gca,'Color',[0.83 0.82 0.78])
-buttons_list = [handles.surface_3D_img_seg, handles.montage_image, handles.surface_3D_seg, handles.show_image_all, handles.show_seg_all];
+buttons_list = [handles.numberLayer, handles.numSeg, handles.surface_3D_img_seg, handles.montage_image, handles.surface_3D_seg, handles.show_image_all, handles.show_seg_all];
 set(buttons_list,'Value',0);
 axes(handles.axes2);
 
-
-if size(file_img,1) ~= 0
-    Surface3D(file_img, [], 'blue');
-    set(handles.axes2,'visible', 'off');
+if get(handles.surface_3D_img, 'Value') == 1
+    if size(file_img,1) ~= 0
+        set(handles.axes2,'visible', 'off');
+        c = uisetcolor('Color of image');
+        Surface3D(file_img, [], c, 0, 0.1);
+        set(handles.axes2,'visible', 'off');
+    else
+        set(handles.axes2,'visible', 'off');
+        msgbox('Read images!');
+    end
 else
+    set(handles.surface_3D_img,'Value',0);
     set(handles.axes2,'visible', 'off');
-    msgbox('Read images!');
 end
 
 
@@ -231,15 +253,22 @@ global seg
 
 cla(handles.axes2,'reset');
 set(gca,'Color',[0.83 0.82 0.78])
-buttons_list = [handles.surface_3D_img_seg, handles.surface_3D_img, handles.montage_image, handles.show_image_all, handles.show_seg_all];
+buttons_list = [handles.numberLayer, handles.numSeg, handles.surface_3D_img_seg, handles.surface_3D_img, handles.montage_image, handles.show_image_all, handles.show_seg_all];
 set(buttons_list,'Value',0);
 axes(handles.axes2);
 
-if size(seg,1) ~= 0
-    Surface3D(seg, [], 'blue'); 
+if get(handles.surface_3D_seg, 'Value') == 1
+    if size(seg,1) ~= 0
+        set(handles.axes2,'visible', 'off');
+        c = uisetcolor('Color of segmentation')
+        Surface3D(seg, [], c, c, 1, 0); 
+    else
+        set(handles.axes2,'visible', 'off');
+        msgbox('Read segmentation!');
+    end
 else
+    set(handles.surface_3D_seg,'Value',0);
     set(handles.axes2,'visible', 'off');
-    msgbox('Read segmentation!');
 end
 
 
@@ -257,16 +286,21 @@ global file_img
 
 cla(handles.axes2,'reset');
 set(gca,'Color',[0.83 0.82 0.78])
-buttons_list = [handles.numberLayer, handles.surface_3D_img_seg, handles.surface_3D_img, handles.surface_3D_seg, handles.montage_image, handles.show_seg_all];
+buttons_list = [handles.numberLayer, handles.numSeg, handles.numberLayer, handles.surface_3D_img_seg, handles.surface_3D_img, handles.surface_3D_seg, handles.montage_image, handles.show_seg_all];
 set(buttons_list,'Value',0);
 set(handles.axes2,'visible', 'off');
 
-if size(file_img,1) ~= 0
-   figure();
-   imshow3D(file_img,[]);
+if get(handles.show_image_all, 'Value') == 1
+    if size(file_img,1) ~= 0
+       figure();
+       imshow3D(file_img,[]);
+    else
+        set(handles.axes2,'visible', 'off');
+        msgbox('Read images!');
+    end
 else
+    set(handles.show_image_all,'Value',0);
     set(handles.axes2,'visible', 'off');
-    msgbox('Read images!');
 end
 
 
@@ -284,23 +318,26 @@ global seg
 
 cla(handles.axes2,'reset');
 set(gca,'Color',[0.83 0.82 0.78])
-buttons_list = [handles.surface_3D_img_seg, handles.surface_3D_img, handles.surface_3D_seg, handles.show_image_all, handles.montage_image];
+buttons_list = [handles.numberLayer, handles.numSeg, handles.surface_3D_img_seg, handles.surface_3D_img, handles.surface_3D_seg, handles.show_image_all, handles.montage_image];
 set(buttons_list,'Value',0);
 set(handles.axes2,'visible', 'off');
 
-
-if size(seg,1) ~= 0
-    figure();
-    imshow3D(seg,[]);
+if get(handles.show_seg_all, 'Value') == 1
+    if size(seg,1) ~= 0
+        figure();
+        imshow3D(seg,[]);
+    else
+        set(handles.axes2,'visible', 'off');
+        msgbox('Read segmentation!');
+    end
 else
-    set(handles.axes2,'visible', 'off');
-    msgbox('Read segmentation!');
+    set(handles.show_seg_all,'Value',0);
+    set(handles.axes2,'visible', 'off'); 
 end
-
 
 % --------------------------------------------------------------------
 function Untitled_9_Callback(hObject, eventdata, handles)
-% hObject    handle to Untitled_9 (see GCBO)
+% hObject    handle to read_file_images (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -387,33 +424,45 @@ global file_img
 
 cla(handles.axes2,'reset');   
 set(gca,'Color',[0.83 0.82 0.78])
-buttons_list = [handles.show_image_all, handles.surface_3D_img_seg, handles.surface_3D_img, handles.surface_3D_seg, handles.montage_image, handles.show_seg_all];
+buttons_list = [handles.numSeg, handles.show_image_all, handles.surface_3D_img_seg, handles.surface_3D_img, handles.surface_3D_seg, handles.montage_image, handles.show_seg_all];
 set(buttons_list,'Value',0);
 
- numberOfLayer = get(handles.edit3, 'String')
- 
- numberOfLayer = str2num(numberOfLayer);
- 
- if(isempty(numberOfLayer))
-    set(handles.axes2,'visible', 'off');
-    msgbox('Enter the layer number!');
-    button = [handles. numberLayer];
-    set(button,'Value',0);
-    
- else
-    rr = size(file_img); % nie dzia³a size ???????!!!!!!!!!! dlaczego -.-
 
-%     if (numberOfLayer == 0 || numberOfLayer > rr(3))
-%         set(handles.axes2,'visible', 'off');
-% %         msgbox('Incorrect range');
-%         button = [handles. numberLayer];
-%         set(button,'Value',0);
-% 
-%     else 
-       imshow(file_img(:,:,numberOfLayer),[]);
-%     end
-    
- end
+if get(handles.numberLayer, 'Value') == 1
+     numberOfLayer = get(handles.edit3, 'String')
+
+     numberOfLayer = str2num(numberOfLayer);
+
+     if(isempty(numberOfLayer))
+        set(handles.axes2,'visible', 'off');
+        msgbox('Enter the layer number!');
+        button = [handles. numberLayer];
+        set(button,'Value',0);
+
+     else
+         if size(file_img,1) ~= 0
+              imshow(file_img(:,:,numberOfLayer),[]);
+         else
+            set(handles.axes2,'visible', 'off');
+            msgbox('Read images!');
+         end
+
+        rr = size(file_img); % nie dzia³a size ???????!!!!!!!!!! dlaczego -.-
+
+    %     if (numberOfLayer == 0 || numberOfLayer > rr(3))
+    %         set(handles.axes2,'visible', 'off');
+    % %         msgbox('Incorrect range');
+    %         button = [handles. numberLayer];
+    %         set(button,'Value',0);
+    % 
+    %     else 
+    %     end
+
+     end
+else
+    set(handles.numberLayer,'Value',0);
+    set(handles.axes2,'visible', 'off');
+end
     
 
 
@@ -439,3 +488,69 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 
 end
+
+
+% --- Executes on button press in numSeg.
+function numSeg_Callback(hObject, eventdata, handles)
+% hObject    handle to numSeg (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of numSeg
+global seg
+
+cla(handles.axes2,'reset');   
+set(gca,'Color',[0.83 0.82 0.78])
+buttons_list = [handles.numberLayer, handles.show_image_all, handles.surface_3D_img_seg, handles.surface_3D_img, handles.surface_3D_seg, handles.montage_image, handles.show_seg_all];
+set(buttons_list,'Value',0);
+
+if get(handles.numSeg, 'Value') == 1
+     numberOfLayer = get(handles.edit4, 'String')
+
+     numberOfLayer = str2num(numberOfLayer);
+
+     if(isempty(numberOfLayer))
+        set(handles.axes2,'visible', 'off');
+        msgbox('Enter the layer number!');
+        button = [handles. numSeg];
+        set(button,'Value',0);
+
+     else
+         if size(seg,1) ~= 0
+              imshow(seg(:,:,numberOfLayer),[]);
+         else
+            set(handles.axes2,'visible', 'off');
+            msgbox('Read segmentation!');
+         end
+     end
+else
+    set(handles.numSeg,'Value',0);
+    set(handles.axes2,'visible', 'off');
+end
+
+
+function edit4_Callback(hObject, eventdata, handles)
+% hObject    handle to edit4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit4 as text
+%        str2double(get(hObject,'String')) returns contents of edit4 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit4_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over surface_3D_img_seg.
+
