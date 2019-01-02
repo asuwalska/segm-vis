@@ -22,7 +22,7 @@ function varargout = aplikacja(varargin)
 
 % Edit the above text to modify the response to help aplikacja
 
-% Last Modified by GUIDE v2.5 02-Jan-2019 15:36:37
+% Last Modified by GUIDE v2.5 02-Jan-2019 18:25:28
 
 % Begin initialization code - DO NOT EDIT
 global pressed
@@ -440,24 +440,21 @@ if get(handles.numberLayer, 'Value') == 1
         set(button,'Value',0);
 
      else
-         if size(file_img,1) ~= 0
-              imshow(file_img(:,:,numberOfLayer),[]);
+         if size(file_img,1) ~= 0 
+             if numberOfLayer > 0 && numberOfLayer < size(file_img,3)
+                 imshow(file_img(:,:,numberOfLayer),[]);
+             else
+                 set(handles.axes2,'visible', 'off');
+                 msgbox({['B³¹d! WprowadŸ poprawny zakres:']...
+                        ['1 : ',num2str(size(file_img,3))]})
+                 set(handles.numberLayer,'Value',0);
+                 set(handles.axes2,'visible', 'off');
+             end
+             
          else
             set(handles.axes2,'visible', 'off');
             msgbox('Read images!');
          end
-
-        rr = size(file_img); % nie dzia³a size ???????!!!!!!!!!! dlaczego -.-
-
-    %     if (numberOfLayer == 0 || numberOfLayer > rr(3))
-    %         set(handles.axes2,'visible', 'off');
-    % %         msgbox('Incorrect range');
-    %         button = [handles. numberLayer];
-    %         set(button,'Value',0);
-    % 
-    %     else 
-    %     end
-
      end
 else
     set(handles.numberLayer,'Value',0);
@@ -465,15 +462,6 @@ else
 end
     
 
-
-
-function edit3_Callback(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit3 as text
-%        str2double(get(hObject,'String')) returns contents of edit3 as a double
 
 
 % --- Executes during object creation, after setting all properties.
@@ -517,7 +505,15 @@ if get(handles.numSeg, 'Value') == 1
 
      else
          if size(seg,1) ~= 0
-              imshow(seg(:,:,numberOfLayer),[]);
+             if numberOfLayer > 0 && numberOfLayer < size(seg,3)
+                    imshow(seg(:,:,numberOfLayer),[]);
+             else
+                 set(handles.axes2,'visible', 'off');
+                 msgbox({['B³¹d! WprowadŸ poprawny zakres:']...
+                 ['1 : ',num2str(size(seg,3))]})
+                 set(handles.numSeg,'Value',0);
+                 set(handles.axes2,'visible', 'off');
+             end
          else
             set(handles.axes2,'visible', 'off');
             msgbox('Read segmentation!');
@@ -553,4 +549,5 @@ end
 
 % --- If Enable == 'on', executes on mouse press in 5 pixel border.
 % --- Otherwise, executes on mouse press in 5 pixel border or over surface_3D_img_seg.
+
 
